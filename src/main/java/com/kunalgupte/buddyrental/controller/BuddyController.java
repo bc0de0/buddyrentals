@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/buddies")
@@ -32,9 +33,9 @@ public class BuddyController {
 
     // READ (Get One)
     @GetMapping("/{id}")
-    public ResponseEntity<Buddy> getBuddyById(@PathVariable Long id) {
-        Buddy buddy = buddyService.getBuddyById(id);
-        if (buddy != null) {
+    public ResponseEntity<Optional<Buddy>> getBuddyById(@PathVariable Long id) {
+        Optional<Buddy> buddy = buddyService.getBuddyById(id);
+        if (buddy.isPresent()) {
             return ResponseEntity.ok(buddy);
         } else {
             return ResponseEntity.notFound().build();
@@ -54,10 +55,10 @@ public class BuddyController {
 
     // DELETE
     @DeleteMapping("/{id}")
-    public ResponseEntity<Buddy> deleteBuddy(@PathVariable Long id) {
-        Buddy deletedBuddy = buddyService.deleteBuddy(id);
-        if (deletedBuddy != null) {
-            return ResponseEntity.ok(deletedBuddy);
+    public ResponseEntity<Boolean> deleteBuddy(@PathVariable Long id) {
+        boolean deletedBuddy = buddyService.deleteBuddy(id);
+        if (deletedBuddy) {
+            return ResponseEntity.ok(true);
         } else {
             return ResponseEntity.notFound().build();
         }
