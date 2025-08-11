@@ -1,6 +1,7 @@
 package com.kunalgupte.buddyrental.service;
 
 import com.kunalgupte.buddyrental.entities.Booking;
+import com.kunalgupte.buddyrental.entities.Rental;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,5 +12,6 @@ public interface BookingService {
     Optional<Booking> getBookingById(Long id);
     Optional<Booking> updateBooking(Long id, Booking bookingDetails);
     boolean deleteBooking(Long id);
+    Optional<Rental> startRental(Long id);
 }
 

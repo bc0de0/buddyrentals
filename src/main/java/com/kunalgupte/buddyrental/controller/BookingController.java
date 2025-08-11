@@ -1,6 +1,7 @@
 package com.kunalgupte.buddyrental.controller;
 
 import com.kunalgupte.buddyrental.entities.Booking;
+import com.kunalgupte.buddyrental.entities.Rental;
 import com.kunalgupte.buddyrental.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,7 @@ import java.util.Optional;
 public class BookingController {
 
     @Autowired
-    private BookingService bookingService;
+    private BookingService bookingService; // using impl for startRental method
 
     // CREATE a new booking
     @PostMapping
@@ -27,32 +28,39 @@ public class BookingController {
     // READ all bookings
     @GetMapping
     public ResponseEntity<List<Booking>> getAllBookings() {
-        List<Booking> bookings = bookingService.getAllBookings();
-        return ResponseEntity.ok(bookings);
+        return ResponseEntity.ok(bookingService.getAllBookings());
     }
 
     // READ booking by ID
     @GetMapping("/{id}")
     public ResponseEntity<Booking> getBookingById(@PathVariable Long id) {
-        Optional<Booking> booking = bookingService.getBookingById(id);
-        return booking.map(ResponseEntity::ok)
+        return bookingService.getBookingById(id)
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    // UPDATE a booking
+    // UPDATE a booking (e.g., confirm or change times)
     @PutMapping("/{id}")
     public ResponseEntity<Booking> updateBooking(@PathVariable Long id, @RequestBody Booking bookingDetails) {
-        Optional<Booking> updatedBooking = bookingService.updateBooking(id, bookingDetails);
-        return updatedBooking.map(ResponseEntity::ok)
+        return bookingService.updateBooking(id, bookingDetails)
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     // DELETE a booking
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBooking(@PathVariable Long id) {
-        boolean deleted = bookingService.deleteBooking(id);
-        return deleted ? ResponseEntity.noContent().build()
+        return bookingService.deleteBooking(id)
+                ? ResponseEntity.noContent().build()
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
-}
 
+    // START a rental from a confirmed booking
+    @PostMapping("/{id}/start-rental")
+    public ResponseEntity<Rental> startRental(@PathVariable Long id) {
+        Optional<Rental> rental = bookingService.startRental(id);
+        return rental.map(r -> ResponseEntity.status(HttpStatus.CREATED).body(r))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(null)); // e.g., booking not confirmed or not found
+    }
+}

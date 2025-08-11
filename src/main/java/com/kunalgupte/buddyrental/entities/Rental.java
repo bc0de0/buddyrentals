@@ -4,7 +4,7 @@ import com.kunalgupte.buddyrental.entities.enums.RentalStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "rentals")
@@ -19,22 +19,30 @@ public class Rental {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    // Link to the booking that created this rental
+    @OneToOne
+    @JoinColumn(name = "booking_id", nullable = false)
+    private Booking booking;
 
-    @Column(nullable = false)
-    private LocalDate startDate;
+    // Actual start and end times of the rental
+    private LocalDateTime actualPickupTime;
+    private LocalDateTime actualReturnTime;
 
-    @Column(nullable = false)
-    private LocalDate endDate;
+    // Price details
+    private double finalPrice;
+    private double extraCharges; // late fee, damage, etc.
+
+    // Vehicle/buddy condition logs (optional)
+    @Column(length = 1000)
+    private String conditionNotesBefore;
+
+    @Column(length = 1000)
+    private String conditionNotesAfter;
+
+    // Mileage tracking if applicable
+    private Double mileageStart;
+    private Double mileageEnd;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private RentalStatus status;
-    @OneToOne
-    private Vehicle vehicle;
-    private Double totalPrice;
-    private Double baseRatePerHour;
+    private RentalStatus status; // ACTIVE, COMPLETED, OVERDUE
 }
-
