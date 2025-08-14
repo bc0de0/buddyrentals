@@ -1,66 +1,53 @@
 package com.kunalgupte.buddyrental.controller;
 
-import com.kunalgupte.buddyrental.entities.Booking;
-import com.kunalgupte.buddyrental.entities.Rental;
+import com.kunalgupte.buddyrental.dto.BookingDto;
 import com.kunalgupte.buddyrental.service.BookingService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/bookings")
+@RequestMapping("/api/bookings")
 public class BookingController {
 
-    @Autowired
-    private BookingService bookingService; // using impl for startRental method
+    private final BookingService bookingService;
 
-    // CREATE a new booking
-    @PostMapping
-    public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
-        Booking savedBooking = bookingService.createBooking(booking);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedBooking);
+    public BookingController(BookingService bookingService) {
+        this.bookingService = bookingService;
     }
 
-    // READ all bookings
+    // Create a new booking
+    @PostMapping
+    public ResponseEntity<BookingDto> createBooking(@RequestBody BookingDto bookingDto) {
+        BookingDto createdBooking = bookingService.createBooking(bookingDto);
+        return ResponseEntity.ok(createdBooking);
+    }
+
+    // Get all bookings
     @GetMapping
-    public ResponseEntity<List<Booking>> getAllBookings() {
+    public ResponseEntity<List<BookingDto>> getAllBookings() {
         return ResponseEntity.ok(bookingService.getAllBookings());
     }
 
-    // READ booking by ID
+    // Get booking by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> getBookingById(@PathVariable Long id) {
-        return bookingService.getBookingById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    public ResponseEntity<BookingDto> getBookingById(@PathVariable Long id) {
+        BookingDto booking = bookingService.getBookingById(id);
+        return booking != null ? ResponseEntity.ok(booking) : ResponseEntity.notFound().build();
     }
 
-    // UPDATE a booking (e.g., confirm or change times)
+    // Update booking
     @PutMapping("/{id}")
-    public ResponseEntity<Booking> updateBooking(@PathVariable Long id, @RequestBody Booking bookingDetails) {
-        return bookingService.updateBooking(id, bookingDetails)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    public ResponseEntity<BookingDto> updateBooking(@PathVariable Long id, @RequestBody BookingDto bookingDto) {
+        BookingDto updatedBooking = bookingService.updateBooking(id, bookingDto);
+        return updatedBooking != null ? ResponseEntity.ok(updatedBooking) : ResponseEntity.notFound().build();
     }
 
-    // DELETE a booking
+    // Delete booking
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBooking(@PathVariable Long id) {
-        return bookingService.deleteBooking(id)
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-    }
-
-    // START a rental from a confirmed booking
-    @PostMapping("/{id}/start-rental")
-    public ResponseEntity<Rental> startRental(@PathVariable Long id) {
-        Optional<Rental> rental = bookingService.startRental(id);
-        return rental.map(r -> ResponseEntity.status(HttpStatus.CREATED).body(r))
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(null)); // e.g., booking not confirmed or not found
+        bookingService.deleteBooking(id);
+        return ResponseEntity.noContent().build();
     }
 }

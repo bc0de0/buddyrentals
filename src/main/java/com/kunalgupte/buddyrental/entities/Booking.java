@@ -34,7 +34,7 @@ public class Booking {
     private LocalDateTime requestedEndTime;
 
     // Estimated cost before rental starts
-    private double estimatedPrice;
+    private Double estimatedPrice;
 
     // Created timestamp
     private LocalDateTime bookingCreatedAt;

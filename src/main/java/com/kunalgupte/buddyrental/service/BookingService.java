@@ -1,17 +1,15 @@
 package com.kunalgupte.buddyrental.service;
 
-import com.kunalgupte.buddyrental.entities.Booking;
-import com.kunalgupte.buddyrental.entities.Rental;
+import com.kunalgupte.buddyrental.dto.BookingDto;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface BookingService {
-    Booking createBooking(Booking booking);
-    List<Booking> getAllBookings();
-    Optional<Booking> getBookingById(Long id);
-    Optional<Booking> updateBooking(Long id, Booking bookingDetails);
-    boolean deleteBooking(Long id);
-    Optional<Rental> startRental(Long id);
+    BookingDto createBooking(BookingDto bookingDto);
+    List<BookingDto> getAllBookings();
+    BookingDto getBookingById(Long id);
+    BookingDto updateBooking(Long id, BookingDto bookingDto);
+    void deleteBooking(Long id);
 }
+
 
