@@ -27,10 +27,10 @@ public class Buddy {
     @Nonnull
     private String number;
     private String license;
-    @Column(columnDefinition = "DOUBLE")
-    private double hourlyRate;
-    @Column(columnDefinition = "DOUBLE")
-    private double rating;
+
+    private Double hourlyRate;
+
+    private Double rating;
     @OneToOne(mappedBy = "buddy")
     private Vehicle vehicle;
 }
