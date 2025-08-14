@@ -4,10 +4,12 @@ import com.kunalgupte.buddyrental.entities.Vehicle;
 import com.kunalgupte.buddyrental.repository.VehicleRepository;
 import com.kunalgupte.buddyrental.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class VehicleServiceImpl implements VehicleService {
 
     @Autowired

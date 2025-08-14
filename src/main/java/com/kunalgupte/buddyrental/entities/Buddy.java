@@ -27,8 +27,10 @@ public class Buddy {
     @Nonnull
     private String number;
     private String license;
+    @Column(columnDefinition = "DOUBLE")
     private double hourlyRate;
+    @Column(columnDefinition = "DOUBLE")
     private double rating;
-    @OneToOne(mappedBy = "vehicle_id")
+    @OneToOne(mappedBy = "buddy")
     private Vehicle vehicle;
 }

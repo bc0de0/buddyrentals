@@ -18,6 +18,11 @@ public class Vehicle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Owning side of OneToOne
+    @OneToOne
+    @JoinColumn(name = "buddy_id")
+    private Buddy buddy;
+
     @Enumerated(EnumType.STRING)
     private VehicleType type;    // CAR, BIKE, SCOOTER
 
@@ -25,17 +30,15 @@ public class Vehicle {
     private String model;
     private String registrationNumber;
 
-    private Integer year;
+    private Integer manufactureYear;
 
-    private String location;     // simple text for now (city/branch)
+    private String location;     // city/branch
 
     @Enumerated(EnumType.STRING)
     private VehicleStatus status; // AVAILABLE, BOOKED, MAINTENANCE
 
-    private double baseRatePerHour; // keep double for now (we can switch to BigDecimal later)
-
-    private Double odometer;     // nullable, optional
-
-    private Double fuelPercentage;
+    // H2-compatible numeric fields
+    private double baseRatePerHour;  // double primitive
+    private Double odometer;         // nullable
+    private Double fuelPercentage;   // nullable
 }
-

@@ -2,11 +2,15 @@ package com.kunalgupte.buddyrental.service.impl;
 
 import com.kunalgupte.buddyrental.entities.Booking;
 import com.kunalgupte.buddyrental.entities.Rental;
+import com.kunalgupte.buddyrental.entities.User;
 import com.kunalgupte.buddyrental.entities.enums.BookingStatus;
 import com.kunalgupte.buddyrental.entities.enums.RentalStatus;
 import com.kunalgupte.buddyrental.repository.BookingRepository;
 import com.kunalgupte.buddyrental.repository.RentalRepository;
 import com.kunalgupte.buddyrental.service.BookingService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +19,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
 
     @Autowired
@@ -26,6 +32,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking createBooking(Booking booking) {
+        log.info("created new booking: {}", booking.getUser().getName());
         booking.setBookingCreatedAt(LocalDateTime.now());
         booking.setStatus(BookingStatus.PENDING);
         return bookingRepository.save(booking);
@@ -44,6 +51,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Optional<Booking> updateBooking(Long id, Booking bookingDetails) {
         return bookingRepository.findById(id).map(existing -> {
+            log.info("Pevious booking details: {}", existing.toString());
             existing.setRequestedStartTime(bookingDetails.getRequestedStartTime());
             existing.setRequestedEndTime(bookingDetails.getRequestedEndTime());
             existing.setEstimatedPrice(bookingDetails.getEstimatedPrice());
@@ -55,9 +63,11 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public boolean deleteBooking(Long id) {
         return bookingRepository.findById(id).map(b -> {
+            log.info("Booking cancelled by: {}", b.getUser().getName());
             bookingRepository.delete(b);
             return true;
         }).orElse(false);
+
     }
 
     /**

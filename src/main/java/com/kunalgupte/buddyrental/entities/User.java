@@ -22,7 +22,7 @@ public class User {
 
     private String phone;
 
-    @OneToOne(mappedBy = "wallet_id")
+    @OneToOne(mappedBy = "user")
     private Wallet wallet;
 }
 
